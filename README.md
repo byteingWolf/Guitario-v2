@@ -1,6 +1,5 @@
 # Guitario 
-![](/guiIcons/music.png){:height="50%" width="50%"}
-
+img src="/guiIcons/music.png" width="200" height="200">
 Guitario is a simple guitar chords recognition.
 
 * Project is based on AI recognition of chroma-based features
