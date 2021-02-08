@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
         oImage = QImage("guiIcons\\guitarWallPaper.png")
         sImage = oImage.scaled(self.sizeWin)
         palette.setBrush(QPalette.Background, QBrush(sImage))
-        app.setPalette(palette)
+        self.setPalette(palette)
 
         self.setupUi(self)
 
@@ -280,12 +280,3 @@ class MainWindow(QMainWindow):
             self.song = read_song(path)
             if self.song != None:
                 threading.Thread(target = self.song_thread).start()
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    app.setApplicationName("Guitario")
-    app.setStyle("Fusion")
-
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())

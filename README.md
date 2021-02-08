@@ -42,4 +42,5 @@ http://www.montefiore.ulg.ac.be/services/acous/STSI/file/jim2012Chords.zip
 All requied python packages with their versions are specified in the requirements.txt file
 
 ## Setup
-To run this project all python modules 
+To run this project, compile main.py file using python interpreter
+```python python main.py
