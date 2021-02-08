@@ -1,5 +1,5 @@
 # Guitario 
-![](https://github.com/wolf4fun/Guitario-v2/blob/master/guiIcons/music.png)
+![](https://github.com/wolf4fun/Guitario-v2/blob/master/guiIcons/music.png =250x250)
 
 Guitario is a simple guitar chords recognition.
 
