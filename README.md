@@ -28,8 +28,11 @@ Four guitar were used:
 WAV files:
 
 [1-25]   : Guitar 1
+
 [26-50]  : Guitar 2
+
 [51-75]  : Guitar 3
+
 [76-100] : Guitar 4
 
 * Database was provided by INTELSIG Laboratory, University of Liège, Departement EECS
