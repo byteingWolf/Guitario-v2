@@ -1,5 +1,6 @@
 # Guitario 
 ![](https://github.com/wolf4fun/Guitario-v2/blob/master/guiIcons/music.png)
+
 Guitario is a simple guitar chords recognition.
 
 * Project is based on AI recognition of chroma-based features
