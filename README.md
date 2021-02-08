@@ -41,7 +41,7 @@ http://www.montefiore.ulg.ac.be/services/acous/STSI/file/jim2012Chords.zip
 # Model training method
 
 For training purpose tensorflow 2.3.1 was used.
-Model was trained by usising 256x256 pixels images of chroma fetures of each recorded chords
+Model was trained by usising 256x256 pixels images of chroma fetures of each recorded chord
 
 # Chroma feature 
 
