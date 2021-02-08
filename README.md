@@ -17,7 +17,7 @@ Guitario is a simple guitar chords recognition.
 * f
 * g
 
-## Training database contain 2000 images created from 2000 recordings of 10 guitar chords
+## Training database contains 2000 images created from 2000 recordings of 10 guitar chords
 
 # Recording database
 
@@ -44,6 +44,14 @@ For training purpose tensorflow 2.3.1 was used.
 Model was trained by usising 256x256 pixels images of chroma fetures of each recorded chord
 
 # Chroma feature 
+
+For sound analysis purposes:
+* Detecting new chords
+* CQT transform
+* Creating feature chroma
+
+Librosa library was used
+https://librosa.org/doc/main/index.html
 
 For better understanding of topic I highly recomend:
 
