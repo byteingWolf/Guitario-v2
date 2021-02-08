@@ -4,7 +4,7 @@ Guitario is a simple guitar chords recognition.
 
 * Project is based on AI recognition of chroma-based features
 
-## Chords implemented
+## Chords currently implemented
 
 * a
 * am
@@ -27,10 +27,10 @@ Guitario is a simple guitar chords recognition.
 Four guitar were used: 
 WAV files:
 
-[1-25]   : Guitar 1         
+[1-25]   : Guitar 1
 [26-50]  : Guitar 2
 [51-75]  : Guitar 3
-[76-100] : Guitar 4 
+[76-100] : Guitar 4
 
 * Database was provided by INTELSIG Laboratory, University of Liège, Departement EECS
 http://www.montefiore.ulg.ac.be/services/acous/STSI/file/jim2012Chords.zip
