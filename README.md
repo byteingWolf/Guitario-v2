@@ -18,7 +18,7 @@ Guitario is a simple guitar chords recognition.
 * f
 * g
 
-## Training database contain 2000 images created from 2000 recordings of 10 guitar chords
+## Training database contains 2000 images created from 2000 recordings of 10 guitar chords
 
 ## Recording database
 
