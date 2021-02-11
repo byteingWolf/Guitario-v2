@@ -1,4 +1,3 @@
 .vscode
 __pycache__
-models/
-temp/
+/saved_accords
