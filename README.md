@@ -50,6 +50,7 @@ All requied python packages with their versions are specified in the requirement
 ## Setup
 
 To run this project, all modules listed in requirements.txt file must be installed
+
 If package installer pip is installed you can install all required modules using this line
 
 `pip install -r requirements.txt`
