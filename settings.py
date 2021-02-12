@@ -7,7 +7,7 @@ KEY_LIST = list(CHORDS.keys())
 IMG_HEIGHT = 256
 IMG_WIDTH = 256
 
-MODEL_PATH = "models\\modelChords"
+MODEL_PATH = r'models\modelChords'
 
 #Song example
 SONG_NAME = r'song_examples\song_example_rock.wav'
