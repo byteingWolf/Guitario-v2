@@ -2,7 +2,8 @@ import os
 import threading
 import warnings
 import cv2
-from PIL import Image
+from zipfile import ZipFile
+
 from pathlib import Path
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
@@ -18,8 +19,11 @@ from settings import MODEL_PATH, SONG_DURATION
 from functions import create_onset_info, read_song
 from modelPredict import model_predict
 
+import tensorflow as tf
+
+
 class MainWindow(QMainWindow):
-    
+
     class EventWindow(QMainWindow):
         state = pyqtSignal(bool)
 
@@ -28,7 +32,7 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def hhmmss(ms):
-        
+
         h, r = divmod(ms, 360000)
         m, r = divmod(r, 60000)
         s, _ = divmod(r, 1000)
@@ -41,11 +45,13 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(self.sizeWin)
 
         self.central_widget = QtWidgets.QWidget(MainWindow)
-        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Maximum)
+        size_policy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Maximum)
 
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth( self.central_widget.sizePolicy().hasHeightForWidth())
+        size_policy.setHeightForWidth(
+            self.central_widget.sizePolicy().hasHeightForWidth())
 
         self.central_widget.setSizePolicy(size_policy)
 
@@ -55,13 +61,15 @@ class MainWindow(QMainWindow):
         self.horizontal_layout_4 = QtWidgets.QHBoxLayout()
 
         self.viewer = self.EventWindow(self)
-        self.viewer.setWindowFlags(self.viewer.windowFlags() | Qt.WindowStaysOnTopHint)
+        self.viewer.setWindowFlags(
+            self.viewer.windowFlags() | Qt.WindowStaysOnTopHint)
         self.viewer.setMinimumSize(self.sizeWin)
         self.vertical_layout.addWidget(self.viewer)
 
         self.currentTimeLabel = QtWidgets.QLabel(self.central_widget)
         self.currentTimeLabel.setMinimumSize(QtCore.QSize(80, 0))
-        self.currentTimeLabel.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.currentTimeLabel.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
 
         self.horizontal_layout_4.addWidget(self.currentTimeLabel)
 
@@ -71,7 +79,8 @@ class MainWindow(QMainWindow):
         self.horizontal_layout_4.addWidget(self.timeSlider)
         self.totalTimeLabel = QtWidgets.QLabel(self.central_widget)
         self.totalTimeLabel.setMinimumSize(QtCore.QSize(80, 0))
-        self.totalTimeLabel.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+        self.totalTimeLabel.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
         self.horizontal_layout_4.addWidget(self.totalTimeLabel)
         self.vertical_layout.addLayout(self.horizontal_layout_4)
@@ -82,17 +91,20 @@ class MainWindow(QMainWindow):
         self.play_button = QPushButton(QIcon("guiIcons/control.png"), "", self)
 
         self.horizontal_layout_5.addWidget(self.play_button)
-        self.pause_button = QPushButton(QIcon("guiIcons/control-pause.png"), "", self)
+        self.pause_button = QPushButton(
+            QIcon("guiIcons/control-pause.png"), "", self)
 
         self.horizontal_layout_5.addWidget(self.pause_button)
         self.stopButton = QtWidgets.QPushButton(self.central_widget)
 
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("guiIcons/control-stop-square.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(
+            "guiIcons/control-stop-square.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.stopButton.setIcon(icon3)
         self.horizontal_layout_5.addWidget(self.stopButton)
 
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontal_layout_5.addItem(spacerItem)
         self.label = QtWidgets.QLabel(self.central_widget)
 
@@ -103,7 +115,7 @@ class MainWindow(QMainWindow):
         self.volumeSlider.setMaximum(100)
         self.volumeSlider.setProperty("value", 100)
         self.volumeSlider.setOrientation(QtCore.Qt.Horizontal)
-        
+
         self.horizontal_layout_5.addWidget(self.volumeSlider)
         self.vertical_layout.addLayout(self.horizontal_layout_5)
         self.horizontal_layout.addLayout(self.vertical_layout)
@@ -126,7 +138,8 @@ class MainWindow(QMainWindow):
         # self.statusBar = QtWidgets.QStatusBar(MainWindow)
         # MainWindow.setStatusBar(self.statusBar)
 
-        self.open_file_action = QAction(QIcon("guiIcons\\directory.png"), "&Choose audio file in wav or mp3 format", self)
+        self.open_file_action = QAction(QIcon(
+            "guiIcons\\directory.png"), "&Choose audio file in wav or mp3 format", self)
         self.menuFIle.addAction(self.open_file_action)
         self.menuBar.addAction(self.menuFIle.menuAction())
 
@@ -167,8 +180,8 @@ class MainWindow(QMainWindow):
 
         self.setupUi(self)
 
-        #Setup player
-        self.player = QMediaPlayer(None,QMediaPlayer.VideoSurface)
+        # Setup player
+        self.player = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.player.error.connect(self.erroralert)
 
         videoWidget = QVideoWidget()
@@ -188,7 +201,7 @@ class MainWindow(QMainWindow):
 
         #! LOADING MODEL
         self.working = False
-        threading.Thread(target = self.load_model).start()
+        threading.Thread(target=self.load_model).start()
 
     def update_duration(self, duration):
         self.timeSlider.setMaximum(duration)
@@ -215,9 +228,17 @@ class MainWindow(QMainWindow):
     def erroralert(self, *args):
         print(args)
 
+    def extract_ziped_model(self):
+        with ZipFile(MODEL_PATH + '.zip', 'r') as zip:
+            print('Extracting model files! (first time program runs)')
+            zip.extractall('models')
+            print('Extracting model from zip file finished! (first time program runs)')
+        os.remove(MODEL_PATH + '.zip')
+
     def load_model(self):
-        import tensorflow as tf
         print("Loading model!")
+        if not os.path.isfile(MODEL_PATH):
+            self.extract_ziped_model()
         self.model = tf.keras.models.load_model(MODEL_PATH)
         print("Ready to load the song!")
 
@@ -226,17 +247,19 @@ class MainWindow(QMainWindow):
 
         self.timeSlider.blockSignals(True)
         self.loading = True
-        self.player.setMedia(QMediaContent(QUrl.fromLocalFile("guiIcons\\loading.gif")))
+        self.player.setMedia(QMediaContent(
+            QUrl.fromLocalFile("guiIcons\\loading.gif")))
         self.viewer.setVisible(True)
         self.player.play
 
         print("Creating chords for song ", self.song)
         print("Please wait!")
-        detection_list,_,duration_list = create_onset_info(self.song,SONG_DURATION,False)
-        prediction_list = model_predict(MODEL_PATH,detection_list)
-        image_shape = (200,300)
+        detection_list, duration_list = create_onset_info(
+            self.song, SONG_DURATION, False)
+        prediction_list = model_predict(self.model, detection_list)
+        image_shape = (200, 300)
 
-        print("Found chord: ",prediction_list)
+        print("Found chord: ", prediction_list)
 
         Path("saved_accords").mkdir(parents=True, exist_ok=True)
 
@@ -244,45 +267,46 @@ class MainWindow(QMainWindow):
         VIDEO_FPS = 60
         VIDEO_PATH = "saved_accords\\" + os.path.basename(self.song[:-4])
         VIDEO_PATH_AVI = VIDEO_PATH + "_GENERATED.avi"
-        out = cv2.VideoWriter(VIDEO_PATH_AVI,cv2.VideoWriter_fourcc('M','J','P','G'), VIDEO_FPS, image_shape)
+        out = cv2.VideoWriter(VIDEO_PATH_AVI, cv2.VideoWriter_fourcc(
+            'M', 'J', 'P', 'G'), VIDEO_FPS, image_shape)
         timer = 0.0
         time_adder = 1/VIDEO_FPS
 
         for i in range(len(detection_list)):
             chord_image_path = "Guitar chords\\" + prediction_list[i] + '.png'
-            # if os.path.isfile(chord_image_path):
             chord_end = timer + duration_list[i]
             img = cv2.imread(chord_image_path)
-            img = cv2.resize(img, image_shape, interpolation = cv2.INTER_AREA)
+            img = cv2.resize(img, image_shape, interpolation=cv2.INTER_AREA)
 
             while timer <= chord_end:
                 out.write(img)
                 timer += time_adder
-            # else:
-            #     timer+= duration_list[i]
-                
+
         out.release()
 
         # adding sound to clip
-        video = VideoFileClip(VIDEO_PATH_AVI,audio= False)
-        audio = AudioFileClip(self.song) 
+        video = VideoFileClip(VIDEO_PATH_AVI, audio=False)
+        audio = AudioFileClip(self.song)
         final = video.set_audio(audio)
-        final.write_videofile(VIDEO_PATH + ".mp4",codec= 'mpeg4' ,audio_codec='libvorbis',fps=VIDEO_FPS)
+        final.write_videofile(VIDEO_PATH + ".mp4", codec='mpeg4',
+                              audio_codec='libvorbis', fps=VIDEO_FPS)
         self.player.stop
         self.loading = False
-        self.player.setMedia(QMediaContent(QUrl.fromLocalFile(VIDEO_PATH + ".mp4")))
+        self.player.setMedia(QMediaContent(
+            QUrl.fromLocalFile(VIDEO_PATH + ".mp4")))
         self.timeSlider.blockSignals(False)
         self.player.play
-        
+
         os.remove(VIDEO_PATH_AVI)
         if self.DELETE_SONG_FLAG:
             os.remove(self.song)
         self.working = False
 
     def open_file(self):
-        
-        path, _ = QFileDialog.getOpenFileName(self,"Open file", "","wav or mp3 files (*.wav *.mp3)")
+
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Open file", "", "wav or mp3 files (*.wav *.mp3)")
         if path != "" and self.working == False:
-            self.song,self.DELETE_SONG_FLAG = read_song(path)
+            self.song, self.DELETE_SONG_FLAG = read_song(path)
             if self.song != None:
-                threading.Thread(target = self.song_thread).start()
+                threading.Thread(target=self.song_thread).start()

@@ -1,6 +1,5 @@
 .vscode
 __pycache__
 /saved_accords
-functionsOld.py
+functions_deprecated.py
 test.py
-extractZipModel.py
