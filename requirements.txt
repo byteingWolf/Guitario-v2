@@ -1,8 +1,8 @@
-pydub==0.24.1
-moviepy==1.0.3
-tensorflow==2.3.1
-matplotlib==3.3.2
-librosa==0.8.0
-opencv_python==4.4.0.46
-numpy==1.18.5
-PyQt5==5.15.2
+pydub>=0.24.1
+moviepy>=1.0.3
+tensorflow>=2.3.1
+matplotlib>=3.3.2
+librosa>=0.8.0
+opencv_python>=4.4.0.46
+numpy>=1.18.5
+PyQt5>=5.15.2
