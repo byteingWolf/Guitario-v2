@@ -237,7 +237,7 @@ class MainWindow(QMainWindow):
 
     def load_model(self):
         print("Loading model!")
-        if not os.path.isfile(MODEL_PATH):
+        if not os.path.isdir(MODEL_PATH):
             self.extract_ziped_model()
         self.model = tf.keras.models.load_model(MODEL_PATH)
         print("Ready to load the song!")
