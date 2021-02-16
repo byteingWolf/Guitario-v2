@@ -1,25 +1,24 @@
 import os
 import threading
-import warnings
-import cv2
+from pathlib import Path
 from zipfile import ZipFile
 
-from pathlib import Path
+import cv2
+import tensorflow as tf
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QSize, Qt, QUrl, pyqtSignal
+from PyQt5.QtCore import QRect, QSize, Qt, QUrl, pyqtSignal
 from PyQt5.QtGui import QBrush, QColor, QIcon, QImage, QPalette
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtWidgets import QAction, QFileDialog, QMainWindow, QPushButton
+from PyQt5.QtWidgets import (QAction, QFileDialog, QHBoxLayout, QLabel,
+                             QMainWindow, QMenuBar, QPushButton, QSizePolicy,
+                             QVBoxLayout, QWidget)
 
-from settings import MODEL_PATH, SONG_DURATION
 from functions import create_onset_info, read_song
 from modelPredict import model_predict
-
-import tensorflow as tf
+from settings import MODEL_PATH, SONG_DURATION
 
 
 class MainWindow(QMainWindow):
@@ -32,33 +31,30 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def hhmmss(ms):
-
-        h, r = divmod(ms, 360000)
-        m, r = divmod(r, 60000)
-        s, _ = divmod(r, 1000)
-        return ("%d:%02d:%02d" % (h, m, s)) if m else ("%d:%02d" % (m, s))
+        h, r = divmod(ms, 360000) #60*60*1000 
+        m, r = divmod(r, 60000) #60*1000
+        s, _ = divmod(r, 1000) #1000
+        return ("%02d:%02d:%02d" % (h, m, s)) if m else ("%02d:%02d" % (m, s))
 
     def setupUi(self, MainWindow):
 
-        warnings.simplefilter("ignore")
         self.sizeWin = QSize(640, 360)
         self.setMinimumSize(self.sizeWin)
 
-        self.central_widget = QtWidgets.QWidget(MainWindow)
-        size_policy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Maximum)
+        self.central_widget = QWidget(MainWindow)
+        size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Maximum)
 
-        size_policy.setHorizontalStretch(0)
-        size_policy.setVerticalStretch(0)
+        # size_policy.setHorizontalStretch(0)
+        # size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
             self.central_widget.sizePolicy().hasHeightForWidth())
 
         self.central_widget.setSizePolicy(size_policy)
 
-        self.horizontal_layout = QtWidgets.QHBoxLayout(self.central_widget)
+        self.horizontal_layout = QHBoxLayout(self.central_widget)
         self.horizontal_layout.setContentsMargins(11, 11, 11, 11)
-        self.vertical_layout = QtWidgets.QVBoxLayout()
-        self.horizontal_layout_4 = QtWidgets.QHBoxLayout()
+        self.vertical_layout = QVBoxLayout()
+        self.horizontal_layout_4 = QHBoxLayout()
 
         self.viewer = self.EventWindow(self)
         self.viewer.setWindowFlags(
@@ -66,10 +62,10 @@ class MainWindow(QMainWindow):
         self.viewer.setMinimumSize(self.sizeWin)
         self.vertical_layout.addWidget(self.viewer)
 
-        self.currentTimeLabel = QtWidgets.QLabel(self.central_widget)
-        self.currentTimeLabel.setMinimumSize(QtCore.QSize(80, 0))
+        self.currentTimeLabel = QLabel(self.central_widget)
+        self.currentTimeLabel.setMinimumSize(QSize(80, 0))
         self.currentTimeLabel.setAlignment(
-            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+            Qt.AlignRight | Qt.AlignTrailing | Qt.AlignVCenter)
 
         self.horizontal_layout_4.addWidget(self.currentTimeLabel)
 
@@ -89,18 +85,12 @@ class MainWindow(QMainWindow):
         self.horizontal_layout_5.setSpacing(6)
 
         self.play_button = QPushButton(QIcon("guiIcons/control.png"), "", self)
-
         self.horizontal_layout_5.addWidget(self.play_button)
-        self.pause_button = QPushButton(
-            QIcon("guiIcons/control-pause.png"), "", self)
 
+        self.pause_button = QPushButton(QIcon("guiIcons/control-pause.png"), "", self)
         self.horizontal_layout_5.addWidget(self.pause_button)
-        self.stopButton = QtWidgets.QPushButton(self.central_widget)
-
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(
-            "guiIcons/control-stop-square.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.stopButton.setIcon(icon3)
+        
+        self.stopButton = QPushButton(QIcon("guiIcons/control-stop-square.png"), "", self)
         self.horizontal_layout_5.addWidget(self.stopButton)
 
         spacerItem = QtWidgets.QSpacerItem(
@@ -122,21 +112,12 @@ class MainWindow(QMainWindow):
 
         MainWindow.setCentralWidget(self.central_widget)
 
-        # button = QPushButton(QIcon("guiIcons\\directory.png"), "&Choose audio file in wav or mp3 format", self)
-        # button.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        # button.clicked.connect(self.open_file)
-
-        # self.horizontal_layout.addWidget(button)
-
-        self.menuBar = QtWidgets.QMenuBar(MainWindow)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 484, 22))
+        self.menuBar = QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QRect(0, 0, 484, 22))
 
         self.menuFIle = QtWidgets.QMenu(self.menuBar)
 
         MainWindow.setMenuBar(self.menuBar)
-
-        # self.statusBar = QtWidgets.QStatusBar(MainWindow)
-        # MainWindow.setStatusBar(self.statusBar)
 
         self.open_file_action = QAction(QIcon(
             "guiIcons\\directory.png"), "&Choose audio file in wav or mp3 format", self)
@@ -180,7 +161,7 @@ class MainWindow(QMainWindow):
 
         self.setupUi(self)
 
-        # Setup player
+        # Setup QMediaPlayer
         self.player = QMediaPlayer(None, QMediaPlayer.VideoSurface)
         self.player.error.connect(self.erroralert)
 
@@ -225,9 +206,6 @@ class MainWindow(QMainWindow):
         else:
             self.viewer.hide()
 
-    def erroralert(self, *args):
-        print(args)
-
     def extract_ziped_model(self):
         with ZipFile(MODEL_PATH + '.zip', 'r') as zip:
             print('Extracting model files! (first time program runs)')
@@ -257,10 +235,12 @@ class MainWindow(QMainWindow):
         detection_list, duration_list = create_onset_info(
             self.song, SONG_DURATION, False)
         prediction_list = model_predict(self.model, detection_list)
-        image_shape = (200, 300)
-
         print("Found chord: ", prediction_list)
 
+        #output frame resoultion for video
+        image_shape = (200, 300)
+
+        #creating folder saved_accords if does not exist
         Path("saved_accords").mkdir(parents=True, exist_ok=True)
 
         #!using cv2 to create videoClip
@@ -298,8 +278,8 @@ class MainWindow(QMainWindow):
         self.player.play
 
         os.remove(VIDEO_PATH_AVI)
-        if self.DELETE_SONG_FLAG:
-            os.remove(self.song)
+        # if self.DELETE_SONG_FLAG:
+        #     os.remove(self.song)
         self.working = False
 
     def open_file(self):
@@ -307,6 +287,9 @@ class MainWindow(QMainWindow):
         path, _ = QFileDialog.getOpenFileName(
             self, "Open file", "", "wav or mp3 files (*.wav *.mp3)")
         if path != "" and self.working == False:
-            self.song, self.DELETE_SONG_FLAG = read_song(path)
+            self.song = read_song(path)
             if self.song != None:
                 threading.Thread(target=self.song_thread).start()
+
+    def erroralert(self, *args):
+        print(args)

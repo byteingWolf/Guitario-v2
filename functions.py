@@ -8,9 +8,9 @@ import os
 def read_song(SONG_NAME):
     _, file_extension = os.path.splitext(SONG_NAME)
     if file_extension != '.mp3' and file_extension != '.wav':
-        return None,False 
+        return None
 
-    return SONG_NAME,False
+    return SONG_NAME
 
 def create_onset_info(SONG_NAME,SONG_DURATION=60,SET_DUARTION = False):
 
@@ -32,6 +32,23 @@ def create_onset_info(SONG_NAME,SONG_DURATION=60,SET_DUARTION = False):
     ends = onset_samples[1:]
     detection_list = []
     duration_list = []
+
+    #! concecrate very short fragments version
+    # ommited_samples = 0
+    # for _,(start, end) in enumerate(zip(starts, ends)):
+    #     if ommited_samples > 0:
+    #         fragment = y[ommited_samples:end]
+    #     else:
+    #         fragment = y[start:end]
+    #     fragment_time = librosa.get_duration(y=fragment,sr=sr)
+    #     if fragment_time < 0.1:
+    #         ommited_samples+=start
+    #         continue
+    #     ommited_samples = 0
+    #     duration_list.append(fragment_time)
+    #     detection_list.append(librosa.feature.chroma_cqt(y=fragment, sr=sr,cqt_mode = 'hybrid'))
+
+    #! ignoring very short fragments version
     for _,(start, end) in enumerate(zip(starts, ends)):
         fragment = y[start:end]
         fragment_time = librosa.get_duration(y=fragment,sr=sr)
