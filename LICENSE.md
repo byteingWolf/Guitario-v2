@@ -1,1 +1,0 @@
-# Project implementation was made purely for studying and fun providing purpose therefore all permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted
