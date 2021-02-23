@@ -44,8 +44,6 @@ class MainWindow(QMainWindow):
         self.central_widget = QWidget(MainWindow)
         size_policy = QSizePolicy(QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Maximum)
 
-        # size_policy.setHorizontalStretch(0)
-        # size_policy.setVerticalStretch(0)
         size_policy.setHeightForWidth(
             self.central_widget.sizePolicy().hasHeightForWidth())
 
@@ -278,8 +276,6 @@ class MainWindow(QMainWindow):
         self.player.play
 
         os.remove(VIDEO_PATH_AVI)
-        # if self.DELETE_SONG_FLAG:
-        #     os.remove(self.song)
         self.working = False
 
     def open_file(self):
