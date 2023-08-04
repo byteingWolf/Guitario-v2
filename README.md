@@ -1,9 +1,9 @@
 # Guitario
 
 <img src="/guiIcons/music.png" width="200" height="200">
-Guitario is a simple guitar chords recognition.
+Guitario is a simple guitar chords recognition tool.
 
-* Project is based on AI recognition of chroma-based features
+The project is based on AI recognition of chroma-based features
 
 ## Chords currently implemented
 
@@ -22,40 +22,41 @@ Guitario is a simple guitar chords recognition.
 
 ## Recording database
 
-* For each chord, there are 200 wav files sampled at 44.100 Hz and quantized at 16 bits.
+* For each chord, there are 200 .wav files sampled at 44.100 Hz and quantized at 16 bits.
 
 * 100 first chords are recorded in an anechoic chamber and the 100 last are recorded in a noisy room 
 
-Four guitar were used, WAV file numbers
+Four guitars were used, and WAV file numbers
 
-* [1-25]   : Guitar 1
+* [1-25]: Guitar 1
 
-* [26-50]  : Guitar 2
+* [26-50]: Guitar 2
 
-* [51-75]  : Guitar 3
+* [51-75]: Guitar 3
 
-* [76-100] : Guitar 4
+* [76-100]: Guitar 4
 
 * Database was provided by INTELSIG Laboratory, University of Liège, Departement EECS
 <http://www.montefiore.ulg.ac.be/services/acous/STSI/file/jim2012Chords.zip>
+(*Update 2023 seems like the dataset is no longer available, feel free to PM if it would be useful for your project I will try to find and torrent)
 ## Model training
 
-For training purpose tensorflow 2.3.1 was used.
-Model was trained by usising 256x256 pixels images of chroma fetures of each recorded chord
+For training purposes, TensorFlow 2.3.1 was used.
+The model was trained by using 256x256 pixels images of chroma features of each recorded chord
 
 ## Requirements
 
-All requied python packages with their versions are specified in the requirements.txt file
+All required Python packages with their versions are specified in the requirements.txt file
 
 ## Setup
 
-To run this project, all modules listed in requirements.txt file must be installed
+To run this project, all modules listed in the requirements.txt file must be installed
 
-If package installer pip is installed you can install all required modules using this line
+If package installer pip is installed you can install all required modules using this command
 
 `pip install -r requirements.txt`
 
-To run this project, compile main.py file using python interpreter
+To run this project, run the main.py file using Python interpreter
 
 `python main.py`
 
